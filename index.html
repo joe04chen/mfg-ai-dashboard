@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFG 生產營運 AI Agent 智慧戰情室</title>
+    <!-- 先套用主題，避免載入時閃白/閃黑 -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('mfg_theme');
+                if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', t);
+                var l = new URLSearchParams(location.search).get('lang') || localStorage.getItem('mfg_lang');
+                if (l === 'en') document.documentElement.setAttribute('lang', 'en');
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js：cdnjs 失敗時自動改用 jsdelivr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+            onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-logo"><i class="ri-cpu-line"></i></div>
+            <div class="brand-text">
+                <h1 data-i18n="app.title">MFG 生產營運 AI Agent 智慧戰情室</h1>
+                <span class="brand-sub">BizLink Production &amp; Operations AI Agent Control Center</span>
+            </div>
+        </div>
+
+        <div class="topbar-actions">
+            <div class="conn" id="conn" data-state="loading">
+                <span class="conn-dot"></span>
+                <span class="conn-label" id="conn-label">—</span>
+            </div>
+            <div class="updated" id="updated"><i class="ri-time-line"></i><span id="updated-text">—</span></div>
+            <div class="btn-group">
+                <button id="refresh-btn" class="btn" type="button" data-i18n-title="btn.refresh.title">
+                    <i class="ri-refresh-line"></i><span data-i18n="btn.refresh">同步</span>
+                </button>
+                <button id="lang-btn" class="btn" type="button" data-i18n-title="btn.lang.title">
+                    <i class="ri-translate-2"></i><span data-i18n="btn.lang">EN</span>
+                </button>
+                <button id="theme-btn" class="btn" type="button" data-i18n-title="btn.theme.title">
+                    <i class="ri-moon-clear-line" id="theme-icon"></i><span id="theme-text">深色</span>
+                </button>
+                <button id="fs-btn" class="btn btn-icon" type="button" data-i18n-title="btn.fullscreen">
+                    <i class="ri-fullscreen-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="production"><i class="ri-line-chart-line"></i><span data-i18n="tab.production">工時數據分析與效率提升</span></button>
+        <button class="tab" role="tab" data-tab="attendance"><i class="ri-user-shared-line"></i><span data-i18n="tab.attendance">人力管理與降低成本</span></button>
+        <button class="tab" role="tab" data-tab="oee"><i class="ri-macbook-line"></i><span data-i18n="tab.oee">設備 OEE 與 AI 預警總覽</span></button>
+    </nav>
+
+    <section class="banner" aria-live="polite">
+        <div class="banner-icon"><i class="ri-robot-2-line"></i></div>
+        <div class="banner-body">
+            <h3 id="banner-title">AI Agent</h3>
+            <p id="banner-text" data-i18n="banner.loading">系統載入中，正在讀取全廠工時、設備 OEE 與人力出勤數據…</p>
+        </div>
+    </section>
+
+    <section class="kpi-grid" id="kpi-grid"></section>
+
+    <main class="panel">
+        <div class="panel-toolbar">
+            <div class="panel-title">
+                <i class="ri-layout-grid-line"></i>
+                <h2 id="panel-title">—</h2>
+                <span class="badge" id="panel-count"></span>
+            </div>
+            <label class="search">
+                <i class="ri-search-line"></i>
+                <input type="search" id="search-input" autocomplete="off" data-i18n-ph="search.ph" placeholder="搜尋產線、設備、工號或關鍵字…">
+            </label>
+        </div>
+        <div id="content"></div>
+    </main>
+
+    <footer class="footer">
+        <span id="footer-source"></span>
+    </footer>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
